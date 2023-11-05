@@ -41,7 +41,7 @@ public class RatLab {
         List<Integer> selectedFemales;
         List<Integer> selectedMales;
         List<Integer> pups;
-
+        
         // Engage in rat breeding until rats reach the goal weight or generation limit
         while (ratsFitness < 1 && generation < GENERATION_LIMIT) {
             selectedRats = selection(parents, ratCount);
@@ -73,13 +73,15 @@ public class RatLab {
         return generation;
     }
 
+    
     public static double fitness(List<Integer> population, int goal) {
         // Grade the rats based on desired traits. The closer to the goal weight, the better.
-        int sum = 0;
-        for (int i : population) sum += i;
-        double mean = sum / population.size();
-        return mean / goal;
+        // The stream method will collect the sum of all of the rats' weights
+        double sum = population.stream().mapToInt(Integer::intValue).sum();
+        // Return the mean of the current rats' weights / goal
+        return sum / population.size() / goal;
     }
+    
 
     public static List<List<Integer>> selection(List<Integer> population, int retained) {
         // Cull the rats who don't meet the new fitness standard until you have a desired amount of rats to retain
@@ -134,11 +136,8 @@ public class RatLab {
     }
 
     private static double mean(List<Integer> list) {
-        // Find the mean of a list of integers
-        int sum = 0;
-        for (int num : list) {
-            sum += num;
-        }
-        return (double) sum / list.size();
+        // Find the mean of the list of integers
+        return list.stream().mapToInt(Integer::intValue).average().orElse(0);
     }
+    
 }
